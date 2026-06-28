@@ -68,8 +68,8 @@
     </div>
 
     <script>
-        // ✅ LINK SUDAH DIISI SESUAI REPOSITORI KAMU
-        const DATABASE_URL = "https://raw.githubusercontent.com/notifikasispawn/rf-online-next-timer/main/database.json";
+        // ✅ LINK SUDAH SESUAI DENGAN AKUN GITHUB KAMU
+        const DATABASE_URL = "https://raw.githubusercontent.com/notifikasispawn-ui/rf-online-next-timer/main/database.json";
         const TIMEZONE = "Asia/Jakarta";
 
         const JADWAL_TETAP = [
@@ -139,7 +139,7 @@
         function ambilDatabase() {
             fetch(DATABASE_URL + "?t=" + Date.now(), { cache: "no-store" })
                 .then(res => {
-                    if (!res.ok) throw new Error("File tidak ditemukan");
+                    if (!res.ok) throw new Error("File tidak bisa diakses");
                     return res.json();
                 })
                 .then(data => {
@@ -150,7 +150,7 @@
                     document.getElementById("bossContainer").innerHTML = `
                         <div class="text-center text-red-400 py-10">
                             <i class="fa-solid fa-triangle-exclamation text-3xl mb-2"></i>
-                            <p>Gagal memuat data. Cek apakah file database.json sudah ada di repositori.</p>
+                            <p>Gagal memuat data: ${err.message}</p>
                         </div>`;
                 });
         }
