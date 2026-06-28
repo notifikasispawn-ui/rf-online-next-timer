@@ -40,7 +40,7 @@
                 <i class="fa-solid fa-hourglass-half mr-2"></i>RF ONLINE NEXT
             </h1>
             <p class="text-gray-300">Novus World Boss Timer • Zona Waktu: <span class="font-semibold text-yellow-300">WIB (UTC+7)</span></p>
-            <p class="text-xs text-gray-400 mt-1">Data terhubung langsung ke server Discord</p>
+            <p class="text-xs text-gray-400 mt-1">Data dikelola dari server Discord</p>
         </div>
 
         <!-- Reset Harian -->
@@ -53,57 +53,138 @@
 
         <!-- Konten Boss -->
         <div id="bossContainer" class="space-y-8">
-            <!-- Konten akan dimuat otomatis dari bot -->
-            <div class="text-center text-gray-400 py-10">Memuat data dari server...</div>
+            <div class="text-center text-gray-400 py-10">Memuat data...</div>
         </div>
 
         <footer class="text-center text-gray-500 text-sm mt-12 pt-4 border-t border-gray-800">
-            © 2026 RF Online Next Boss Timer • Data dikelola dari server Discord
+            © 2026 RF Online Next Boss Timer • Data dikelola dari Discord
         </footer>
     </div>
 
     <script>
-        // Alamat API Bot kamu (ganti dengan alamat IP/Domain Sparked kamu)
-        const API_URL = "http://193.31.31.112:25244/api/data";
+        // GANTI DENGAN LINK RAW FILE database.json DI GITHUB KAMU
+        const DATABASE_URL = "https://raw.githubusercontent.com/notifikasispawn/rf-online-next-timer/main/database.json";
+        const TIMEZONE = "Asia/Jakarta";
 
-        function formatWaktu(isoString) {
-            if (!isoString) return "<span class='text-gray-500'>Belum tercatat</span>";
-            const target = new Date(isoString);
-            const sekarang = new Date();
-            const selisih = target - sekarang;
-
-            if (selisih <= 0) return "<span class='text-green-400 font-bold'>SUDAH MUNCUL</span>";
-
-            const jam = Math.floor(selisih / 3600000);
-            const menit = Math.floor((selisih % 3600000) / 60000);
-            const detik = Math.floor((selisih % 60000) / 1000);
-            return `${jam.toString().padStart(2, '0')}:${menit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
-        }
-
-        async function ambilData() {
-            try {
-                const res = await fetch(API_URL);
-                const data = await res.json();
-                tampilkanData(data);
-            } catch (err) {
-                document.getElementById("bossContainer").innerHTML = `
-                    <div class="text-center text-red-400 py-10">
-                        <i class="fa-solid fa-triangle-exclamation text-3xl mb-2"></i>
-                        <p>Gagal terhubung ke server data</p>
-                    </div>`;
+        const JADWAL_TETAP = [
+            {
+                "nama_grup": "Novus Boss Group A",
+                "waktu": ["12:00", "18:30"],
+                "warna": "green",
+                "daftar": [
+                    {"nama": "Mecha Yusigula", "level": 36, "lokasi": "Mazar Training Ground", "gambar": "https://i.imgur.com/4YbX7QH.png"},
+                    {"nama": "Mecha Dagan", "level": 38, "lokasi": "Vulcan Valley", "gambar": "https://i.imgur.com/9Zb8WqL.png"},
+                    {"nama": "Subject 13", "level": 40, "lokasi": "Skadi Vale", "gambar": "https://i.imgur.com/7sXpR5d.png"}
+                ]
+            },
+            {
+                "nama_grup": "Novus Boss Group B",
+                "waktu": ["12:00"],
+                "warna": "green",
+                "daftar": [
+                    {"nama": "2tion", "level": 42, "lokasi": "South Dorian Forest", "gambar": "https://i.imgur.com/2Rk9sTf.png"},
+                    {"nama": "Mecha Wild Beast", "level": 48, "lokasi": "Galio Sunken Lands", "gambar": "https://i.imgur.com/5Qe7vWg.png"},
+                    {"nama": "Mecha Optic Larva", "level": 48, "lokasi": "Galio Sunken Lands", "gambar": "https://i.imgur.com/8xR3vMh.png"},
+                    {"nama": "Rusty Sickle", "level": 49, "lokasi": "Spire Plains", "gambar": "https://i.imgur.com/3pK7y9n.png"}
+                ]
+            },
+            {
+                "nama_grup": "Novus Boss Group C",
+                "waktu": ["18:30"],
+                "warna": "green",
+                "daftar": [
+                    {"nama": "Mecha Lunker", "level": 50, "lokasi": "Forest of Exiles", "gambar": "https://i.imgur.com/6tM2zXp.png"},
+                    {"nama": "Mecha Lizard", "level": 52, "lokasi": "Garden of the Gods", "gambar": "https://i.imgur.com/9aV8bNc.png"},
+                    {"nama": "Mecha Temizl", "level": 60, "lokasi": "Pilgrim's Island", "gambar": "https://i.imgur.com/7bNcFgH.png"},
+                    {"nama": "Prime Draco", "level": 62, "lokasi": "Fallen Temple", "gambar": "https://i.imgur.com/2zKqV9m.png"}
+                ]
             }
+        ];
+
+        const JADWAL_INTERVAL = [
+            {
+                "nama_grup": "Novus Boss Group D",
+                "interval_jam": 42,
+                "warna": "orange",
+                "daftar": [
+                    {"nama": "Mecha Tamac", "level": 66, "lokasi": "Blackstone Munitions Factory", "gambar": "https://i.imgur.com/4sLqV9n.png"},
+                    {"nama": "Infernal Larva", "level": 67, "lokasi": "Pioneer's Hill", "gambar": "https://i.imgur.com/8yP7R2f.png"},
+                    {"nama": "Locust", "level": 68, "lokasi": "Seth Slums", "gambar": "https://i.imgur.com/5cQ9vKp.png"},
+                    {"nama": "Mecha Tweezer", "level": 70, "lokasi": "Seth Landfill", "gambar": "https://i.imgur.com/9tR2nMv.png"},
+                    {"nama": "Vastus", "level": 74, "lokasi": "Desert of Death", "gambar": "https://i.imgur.com/3zK7mQ8.png"}
+                ]
+            },
+            {
+                "nama_grup": "Novus Boss Group E",
+                "interval_jam": 48,
+                "warna": "red",
+                "daftar": [
+                    {"nama": "Mecha Warbeast", "level": 76, "lokasi": "Broken Ruins", "gambar": "https://i.imgur.com/7pK2nL9.png"},
+                    {"nama": "Mecha Ertelem", "level": 77, "lokasi": "Ramon Desert", "gambar": "https://i.imgur.com/2vR8zXq.png"},
+                    {"nama": "Mecha Devourer", "level": 79, "lokasi": "Horizon Base", "gambar": "https://i.imgur.com/6bQ5kM9.png"},
+                    {"nama": "e Hook", "level": 80, "lokasi": "Screaming Vale", "gambar": "https://i.imgur.com/9cR3vM2.png"},
+                    {"nama": "Eldrige", "level": 81, "lokasi": "Saufa Colony", "gambar": "https://i.imgur.com/4tL7zN8.png"}
+                ]
+            }
+        ];
+
+        let dataKalah = {};
+
+        function ambilDatabase() {
+            fetch(DATABASE_URL + "?t=" + Date.now())
+                .then(res => res.json())
+                .then(data => {
+                    dataKalah = data;
+                    tampilkanSemua();
+                })
+                .catch(err => {
+                    document.getElementById("bossContainer").innerHTML = `
+                        <div class="text-center text-red-400 py-10">
+                            <i class="fa-solid fa-triangle-exclamation text-3xl mb-2"></i>
+                            <p>Gagal memuat data</p>
+                        </div>`;
+                });
         }
 
-        function tampilkanData(data) {
+        function hitungWaktuTetap(waktuStr) {
+            const sekarang = new Date(new Date().toLocaleString("en-US", {timeZone: TIMEZONE}));
+            const [jam, menit] = waktuStr.split(":").map(Number);
+            let target = new Date(sekarang);
+            target.setHours(jam, menit, 0, 0);
+            if (sekarang >= target) target.setDate(target.getDate() + 1);
+            return target;
+        }
+
+        function hitungWaktuInterval(nama, jam) {
+            if (!dataKalah[nama]) return null;
+            const kalah = new Date(dataKalah[nama]);
+            return new Date(kalah.getTime() + jam * 3600000);
+        }
+
+        function formatWaktu(tanggal) {
+            if (!tanggal) return "<span class='text-gray-400'>Belum dicatat</span>";
+            const sekarang = new Date(new Date().toLocaleString("en-US", {timeZone: TIMEZONE}));
+            const selisih = tanggal - sekarang;
+            if (selisih <= 0) return "<span class='text-green-400 font-bold'>SUDAH MUNCUL</span>";
+            
+            const j = Math.floor(selisih / 3600000);
+            const m = Math.floor((selisih % 3600000) / 60000);
+            const d = Math.floor((selisih % 60000) / 1000);
+            return `${j.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${d.toString().padStart(2, '0')}`;
+        }
+
+        function tampilkanSemua() {
+            const reset = hitungWaktuTetap("05:00");
+            document.getElementById("resetTimer").textContent = formatWaktu(reset).replace(/<[^>]*>/g, '');
+
             let html = "";
 
-            // Tampilkan Jadwal Tetap
-            data.jadwal_tetap.forEach(grup => {
+            JADWAL_TETAP.forEach(grup => {
                 html += `
-                <div class="bg-gray-800/60 rounded-xl p-5 border-l-4 border-green-500 card-shadow">
-                    <h2 class="text-xl font-semibold text-green-400 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-calendar-days"></i> ${grup.nama}
-                        <span class="text-sm text-gray-400 font-normal">${grup.waktu.join(" & ")}</span>
+                <div class="bg-gray-800/60 rounded-xl p-5 border-l-4 border-${grup.warna}-500 card-shadow">
+                    <h2 class="text-xl font-semibold text-${grup.warna}-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-days"></i> ${grup.nama_grup}
+                        <span class="text-sm text-gray-400 font-normal">${grup.waktu.join(" & ")} WIB</span>
                     </h2>
                     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         ${grup.daftar.map(boss => `
@@ -112,7 +193,7 @@
                                 <div class="flex-1">
                                     <h3 class="font-bold text-white">${boss.nama} <span class="text-xs text-gray-300">Lv.${boss.level}</span></h3>
                                     <p class="text-xs text-gray-300 mb-1">📍 ${boss.lokasi}</p>
-                                    <div class="text-lg font-semibold text-green-300">${formatWaktu(boss.waktu_muncul)}</div>
+                                    <div class="text-lg font-semibold text-${grup.warna}-300">${formatWaktu(hitungWaktuTetap(grup.waktu[0]))}</div>
                                 </div>
                             </div>
                         `).join("")}
@@ -120,14 +201,12 @@
                 </div>`;
             });
 
-            // Tampilkan Jadwal Interval
-            data.jadwal_interval.forEach(grup => {
-                const warna = grup.warna === 0xf39c12 ? "border-orange-500 text-orange-400" : "border-red-500 text-red-400";
+            JADWAL_INTERVAL.forEach(grup => {
                 html += `
-                <div class="bg-gray-800/60 rounded-xl p-5 border-l-4 ${warna} card-shadow">
-                    <h2 class="text-xl font-semibold ${warna.split(" ")[1]} mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left"></i> ${grup.nama}
-                        <span class="text-sm text-gray-400 font-normal">Interval ${grup.interval} Jam</span>
+                <div class="bg-gray-800/60 rounded-xl p-5 border-l-4 border-${grup.warna}-500 card-shadow">
+                    <h2 class="text-xl font-semibold text-${grup.warna}-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left"></i> ${grup.nama_grup}
+                        <span class="text-sm text-gray-400 font-normal">Interval ${grup.interval_jam} Jam</span>
                     </h2>
                     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         ${grup.daftar.map(boss => `
@@ -136,9 +215,7 @@
                                 <div class="flex-1">
                                     <h3 class="font-bold text-white">${boss.nama} <span class="text-xs text-gray-300">Lv.${boss.level}</span></h3>
                                     <p class="text-xs text-gray-300 mb-1">📍 ${boss.lokasi}</p>
-                                    <div class="text-lg font-semibold ${grup.warna === 0xf39c12 ? "text-orange-300" : "text-red-300"}">
-                                        ${formatWaktu(boss.waktu_muncul)}
-                                    </div>
+                                    <div class="text-lg font-semibold text-${grup.warna}-300">${formatWaktu(hitungWaktuInterval(boss.nama, grup.interval_jam))}</div>
                                 </div>
                             </div>
                         `).join("")}
@@ -149,9 +226,8 @@
             document.getElementById("bossContainer").innerHTML = html;
         }
 
-        // Jalankan pertama kali, lalu perbarui setiap 30 detik
-        ambilData();
-        setInterval(ambilData, 30000);
+        ambilDatabase();
+        setInterval(ambilDatabase, 30000);
     </script>
 </body>
 </html>
