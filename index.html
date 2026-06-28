@@ -3,160 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RF Online Next - Novus Boss Timer</title>
+    <title>RF Online Next - Boss Timer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: "#0f172a",
+                        darker: "#020617",
+                        accent: "#1e40af"
+                    },
+                    fontFamily: {
+                        game: ["Orbitron", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto { content-visibility: auto; }
+            .card-shadow { box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-900 text-white font-sans">
-    <div class="container mx-auto px-4 py-8 max-w-5xl">
-        <h1 class="text-3xl md:text-4xl font-bold text-center text-blue-400 mb-2">
-            <i class="fa-solid fa-hourglass-half"></i> RF Online Next
-        </h1>
-        <p class="text-center text-gray-400 mb-8">Novus World Boss Countdown Timer (WIB / UTC+7)</p>
-
-        <!-- Reset Server -->
-        <div class="bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl p-6 mb-8 border-l-4 border-yellow-500 shadow-lg">
-            <h2 class="text-xl font-semibold mb-3 text-yellow-300"><i class="fa-solid fa-rotate-right"></i> Reset Harian</h2>
-            <div class="text-3xl md:text-4xl font-bold text-yellow-400" id="resetTimer"></div>
+<body class="bg-gradient-to-br from-gray-900 to-slate-900 text-white min-h-screen font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-game font-bold text-blue-400 mb-3">
+                <i class="fa-solid fa-hourglass-half mr-2"></i>RF ONLINE NEXT
+            </h1>
+            <p class="text-gray-300">Novus World Boss Timer • Zona Waktu: <span class="font-semibold text-yellow-300">WIB (UTC+7)</span></p>
+            <p class="text-xs text-gray-400 mt-1">Data terhubung langsung ke server Discord</p>
         </div>
 
-        <!-- Grup A, B, C -->
-        <div class="grid md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-gray-800 rounded-xl p-5 border-l-4 border-green-500 shadow-md">
-                <h2 class="text-lg font-semibold text-green-400 mb-2">🟢 Group A</h2>
-                <p class="text-sm text-gray-300 mb-3">Muncul setiap hari: 12:00 & 18:30 WIB</p>
-                <div class="text-2xl font-bold text-green-300" id="groupATimer"></div>
-            </div>
-            <div class="bg-gray-800 rounded-xl p-5 border-l-4 border-green-500 shadow-md">
-                <h2 class="text-lg font-semibold text-green-400 mb-2">🟢 Group B</h2>
-                <p class="text-sm text-gray-300 mb-3">Muncul setiap hari: 12:00 WIB</p>
-                <div class="text-2xl font-bold text-green-300" id="groupBTimer"></div>
-            </div>
+        <!-- Reset Harian -->
+        <div class="bg-gradient-to-r from-amber-900/40 to-amber-800/20 rounded-xl p-5 mb-8 border-l-4 border-amber-500 card-shadow">
+            <h2 class="text-xl font-semibold text-amber-300 flex items-center gap-2">
+                <i class="fa-solid fa-rotate-right"></i> Reset Harian
+            </h2>
+            <div id="resetTimer" class="text-3xl md:text-4xl font-bold text-amber-200 mt-2">--:--:--</div>
         </div>
 
-        <div class="bg-gray-800 rounded-xl p-5 mb-8 border-l-4 border-green-500 shadow-md">
-            <h2 class="text-lg font-semibold text-green-400 mb-2">🟢 Group C</h2>
-            <p class="text-sm text-gray-300 mb-3">Muncul setiap hari: 18:30 WIB</p>
-            <div class="text-2xl font-bold text-green-300" id="groupCTimer"></div>
+        <!-- Konten Boss -->
+        <div id="bossContainer" class="space-y-8">
+            <!-- Konten akan dimuat otomatis dari bot -->
+            <div class="text-center text-gray-400 py-10">Memuat data dari server...</div>
         </div>
 
-        <!-- Grup D -->
-        <div class="bg-gray-800 rounded-xl p-5 mb-8 border-l-4 border-orange-500 shadow-md">
-            <h2 class="text-lg font-semibold text-orange-400 mb-3">🟡 Group D • Interval 42 Jam</h2>
-            <div id="groupDList" class="grid md:grid-cols-2 gap-4"></div>
-        </div>
-
-        <!-- Grup E -->
-        <div class="bg-gray-800 rounded-xl p-5 border-l-4 border-red-500 shadow-md">
-            <h2 class="text-lg font-semibold text-red-400 mb-3">🔴 Group E • Interval 48 Jam</h2>
-            <div id="groupEList" class="grid md:grid-cols-2 gap-4"></div>
-        </div>
-
-        <footer class="text-center text-gray-500 text-sm mt-10">
-            © 2026 RF Online Next Boss Timer • Zona Waktu WIB
+        <footer class="text-center text-gray-500 text-sm mt-12 pt-4 border-t border-gray-800">
+            © 2026 RF Online Next Boss Timer • Data dikelola dari server Discord
         </footer>
     </div>
 
     <script>
-        const TZ = "Asia/Jakarta";
+        // Alamat API Bot kamu (ganti dengan alamat IP/Domain Sparked kamu)
+        const API_URL = "http://IP_SPARKED_KAMU:8080/api/data";
 
-        const jadwalTetap = {
-            reset: "05:00",
-            groupA: ["12:00", "18:30"],
-            groupB: ["12:00"],
-            groupC: ["18:30"]
-        };
+        function formatWaktu(isoString) {
+            if (!isoString) return "<span class='text-gray-500'>Belum tercatat</span>";
+            const target = new Date(isoString);
+            const sekarang = new Date();
+            const selisih = target - sekarang;
 
-        const jadwalInterval = {
-            groupD: {
-                interval: 42,
-                daftar: [
-                    {nama: "Mecha Tamac", lvl: 66, lokasi: "Blackstone Munitions Factory"},
-                    {nama: "Infernal Larva", lvl: 67, lokasi: "Pioneer's Hill"},
-                    {nama: "Locust", lvl: 68, lokasi: "Seth Slums"},
-                    {nama: "Mecha Tweezer", lvl: 70, lokasi: "Seth Landfill"},
-                    {nama: "Vastus", lvl: 74, lokasi: "Desert of Death"}
-                ]
-            },
-            groupE: {
-                interval: 48,
-                daftar: [
-                    {nama: "Mecha Warbeast", lvl: 76, lokasi: "Broken Ruins"},
-                    {nama: "Mecha Ertelem", lvl: 77, lokasi: "Ramon Desert"},
-                    {nama: "Mecha Devourer", lvl: 79, lokasi: "Horizon Base"},
-                    {nama: "e Hook", lvl: 80, lokasi: "Screaming Vale"},
-                    {nama: "Eldrige", lvl: 81, lokasi: "Saufa Colony"}
-                ]
-            }
-        };
+            if (selisih <= 0) return "<span class='text-green-400 font-bold'>SUDAH MUNCUL</span>";
 
-        function simpanWaktuKalah(nama, waktuMs) {
-            localStorage.setItem(`kill_${nama}`, waktuMs);
-            updateTimer();
-        }
-
-        function ambilWaktuKalah(nama) {
-            return localStorage.getItem(`kill_${nama}`) ? parseInt(localStorage.getItem(`kill_${nama}`)) : null;
-        }
-
-        function formatWaktu(ms) {
-            const jam = Math.floor(ms / 3600000);
-            const menit = Math.floor((ms % 3600000) / 60000);
-            const detik = Math.floor((ms % 60000) / 1000);
+            const jam = Math.floor(selisih / 3600000);
+            const menit = Math.floor((selisih % 3600000) / 60000);
+            const detik = Math.floor((selisih % 60000) / 1000);
             return `${jam.toString().padStart(2, '0')}:${menit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
         }
 
-        function hitungSelisih(targetMs) {
-            const sekarang = new Date(new Date().toLocaleString("en-US", {timeZone: TZ})).getTime();
-            const selisih = targetMs - sekarang;
-            if (selisih <= 0) return "<span class='text-green-400 font-bold'>SUDAH MUNCUL</span>";
-            return formatWaktu(selisih);
+        async function ambilData() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                tampilkanData(data);
+            } catch (err) {
+                document.getElementById("bossContainer").innerHTML = `
+                    <div class="text-center text-red-400 py-10">
+                        <i class="fa-solid fa-triangle-exclamation text-3xl mb-2"></i>
+                        <p>Gagal terhubung ke server data</p>
+                    </div>`;
+            }
         }
 
-        function hitungWaktuTetap(waktuStr) {
-            const sekarang = new Date(new Date().toLocaleString("en-US", {timeZone: TZ}));
-            const [jam, menit] = waktuStr.split(":").map(Number);
-            let target = new Date(sekarang);
-            target.setHours(jam, menit, 0, 0);
-            if (sekarang >= target) target.setDate(target.getDate() + 1);
-            return target.getTime();
-        }
+        function tampilkanData(data) {
+            let html = "";
 
-        function updateTimer() {
-            document.getElementById("resetTimer").innerHTML = hitungSelisih(hitungWaktuTetap(jadwalTetap.reset));
-            document.getElementById("groupATimer").innerHTML = hitungSelisih(Math.min(...jadwalTetap.groupA.map(hitungWaktuTetap)));
-            document.getElementById("groupBTimer").innerHTML = hitungSelisih(hitungWaktuTetap(jadwalTetap.groupB[0]));
-            document.getElementById("groupCTimer").innerHTML = hitungSelisih(hitungWaktuTetap(jadwalTetap.groupC[0]));
-
-            let htmlD = "";
-            jadwalInterval.groupD.daftar.forEach(boss => {
-                const kalah = ambilWaktuKalah(boss.nama);
-                const target = kalah ? kalah + (jadwalInterval.groupD.interval * 3600000) : null;
-                htmlD += `<div class="bg-gray-700 p-4 rounded-lg">
-                    <h4 class="font-bold text-orange-300">${boss.nama} Lv.${boss.lvl}</h4>
-                    <p class="text-xs text-gray-300 mt-1">📍 ${boss.lokasi}</p>
-                    <div class="text-lg font-semibold my-2">${target ? hitungSelisih(target) : "<span class='text-gray-400'>Belum dicatat</span>"}</div>
-                    <button onclick="simpanWaktuKalah('${boss.nama}', Date.now())" class="w-full mt-1 px-2 py-1.5 bg-red-600 hover:bg-red-700 rounded text-sm">✅ Sudah Dikalahkan</button>
+            // Tampilkan Jadwal Tetap
+            data.jadwal_tetap.forEach(grup => {
+                html += `
+                <div class="bg-gray-800/60 rounded-xl p-5 border-l-4 border-green-500 card-shadow">
+                    <h2 class="text-xl font-semibold text-green-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-days"></i> ${grup.nama}
+                        <span class="text-sm text-gray-400 font-normal">${grup.waktu.join(" & ")}</span>
+                    </h2>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        ${grup.daftar.map(boss => `
+                            <div class="bg-gray-700/50 rounded-lg p-3 flex items-center gap-3">
+                                <img src="${boss.gambar}" alt="${boss.nama}" class="w-16 h-16 rounded object-cover bg-gray-600">
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-white">${boss.nama} <span class="text-xs text-gray-300">Lv.${boss.level}</span></h3>
+                                    <p class="text-xs text-gray-300 mb-1">📍 ${boss.lokasi}</p>
+                                    <div class="text-lg font-semibold text-green-300">${formatWaktu(boss.waktu_muncul)}</div>
+                                </div>
+                            </div>
+                        `).join("")}
+                    </div>
                 </div>`;
             });
-            document.getElementById("groupDList").innerHTML = htmlD;
 
-            let htmlE = "";
-            jadwalInterval.groupE.daftar.forEach(boss => {
-                const kalah = ambilWaktuKalah(boss.nama);
-                const target = kalah ? kalah + (jadwalInterval.groupE.interval * 3600000) : null;
-                htmlE += `<div class="bg-gray-700 p-4 rounded-lg">
-                    <h4 class="font-bold text-red-300">${boss.nama} Lv.${boss.lvl}</h4>
-                    <p class="text-xs text-gray-300 mt-1">📍 ${boss.lokasi}</p>
-                    <div class="text-lg font-semibold my-2">${target ? hitungSelisih(target) : "<span class='text-gray-400'>Belum dicatat</span>"}</div>
-                    <button onclick="simpanWaktuKalah('${boss.nama}', Date.now())" class="w-full mt-1 px-2 py-1.5 bg-red-600 hover:bg-red-700 rounded text-sm">✅ Sudah Dikalahkan</button>
+            // Tampilkan Jadwal Interval
+            data.jadwal_interval.forEach(grup => {
+                const warna = grup.warna === 0xf39c12 ? "border-orange-500 text-orange-400" : "border-red-500 text-red-400";
+                html += `
+                <div class="bg-gray-800/60 rounded-xl p-5 border-l-4 ${warna} card-shadow">
+                    <h2 class="text-xl font-semibold ${warna.split(" ")[1]} mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left"></i> ${grup.nama}
+                        <span class="text-sm text-gray-400 font-normal">Interval ${grup.interval} Jam</span>
+                    </h2>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        ${grup.daftar.map(boss => `
+                            <div class="bg-gray-700/50 rounded-lg p-3 flex items-center gap-3">
+                                <img src="${boss.gambar}" alt="${boss.nama}" class="w-16 h-16 rounded object-cover bg-gray-600">
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-white">${boss.nama} <span class="text-xs text-gray-300">Lv.${boss.level}</span></h3>
+                                    <p class="text-xs text-gray-300 mb-1">📍 ${boss.lokasi}</p>
+                                    <div class="text-lg font-semibold ${grup.warna === 0xf39c12 ? "text-orange-300" : "text-red-300"}">
+                                        ${formatWaktu(boss.waktu_muncul)}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join("")}
+                    </div>
                 </div>`;
             });
-            document.getElementById("groupEList").innerHTML = htmlE;
+
+            document.getElementById("bossContainer").innerHTML = html;
         }
 
-        updateTimer();
-        setInterval(updateTimer, 1000);
+        // Jalankan pertama kali, lalu perbarui setiap 30 detik
+        ambilData();
+        setInterval(ambilData, 30000);
     </script>
 </body>
 </html>
