@@ -68,8 +68,8 @@
     </div>
 
     <script>
-        // ✅ GANTI DENGAN LINK RAW FILE database.json DI GITHUB KAMU
-        https://raw.githubusercontent.com/notifikasispawn-ui/rf-online-next-timer/refs/heads/main/database.json";
+        // ✅ LINK SUDAH DIISI SESUAI REPOSITORI KAMU
+        const DATABASE_URL = "https://raw.githubusercontent.com/notifikasispawn/rf-online-next-timer/main/database.json";
         const TIMEZONE = "Asia/Jakarta";
 
         const JADWAL_TETAP = [
@@ -136,11 +136,10 @@
 
         let dataKalah = {};
 
-        // Ambil data dari file database.json
         function ambilDatabase() {
-            fetch(DATABASE_URL + "?t=" + Date.now())
+            fetch(DATABASE_URL + "?t=" + Date.now(), { cache: "no-store" })
                 .then(res => {
-                    if (!res.ok) throw new Error("Gagal memuat file");
+                    if (!res.ok) throw new Error("File tidak ditemukan");
                     return res.json();
                 })
                 .then(data => {
@@ -151,12 +150,11 @@
                     document.getElementById("bossContainer").innerHTML = `
                         <div class="text-center text-red-400 py-10">
                             <i class="fa-solid fa-triangle-exclamation text-3xl mb-2"></i>
-                            <p>Gagal memuat data. Pastikan link database.json sudah benar dan file sudah diunggah.</p>
+                            <p>Gagal memuat data. Cek apakah file database.json sudah ada di repositori.</p>
                         </div>`;
                 });
         }
 
-        // Hitung waktu untuk jadwal tetap
         function hitungWaktuTetap(waktuStr) {
             const sekarang = new Date(new Date().toLocaleString("en-US", {timeZone: TIMEZONE}));
             const [jam, menit] = waktuStr.split(":").map(Number);
@@ -166,14 +164,12 @@
             return target;
         }
 
-        // Hitung waktu untuk jadwal interval
         function hitungWaktuInterval(nama, jam) {
             if (!dataKalah[nama]) return null;
             const kalah = new Date(dataKalah[nama]);
             return new Date(kalah.getTime() + jam * 3600000);
         }
 
-        // Format tampilan sisa waktu
         function formatWaktu(tanggal) {
             if (!tanggal) return "<span class='text-gray-400'>⏳ Belum tercatat</span>";
             const sekarang = new Date(new Date().toLocaleString("en-US", {timeZone: TIMEZONE}));
@@ -190,14 +186,12 @@
             return `${jam.toString().padStart(2, '0')}:${menit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
         }
 
-        // Tampilkan semua data ke halaman
         function tampilkanSemua() {
             const reset = hitungWaktuTetap("05:00");
             document.getElementById("resetTimer").textContent = formatWaktu(reset).replace(/<[^>]*>/g, '');
 
             let html = "";
 
-            // Tampilkan Grup Tetap
             JADWAL_TETAP.forEach(grup => {
                 html += `
                 <div class="bg-gray-800/60 rounded-xl p-5 border-l-4 border-${grup.warna} card-shadow">
@@ -221,7 +215,6 @@
                 </div>`;
             });
 
-            // Tampilkan Grup Interval
             JADWAL_INTERVAL.forEach(grup => {
                 html += `
                 <div class="bg-gray-800/60 rounded-xl p-5 border-l-4 border-${grup.warna} card-shadow">
@@ -248,7 +241,6 @@
             document.getElementById("bossContainer").innerHTML = html;
         }
 
-        // Jalankan fungsi pertama kali, lalu perbarui setiap 30 detik
         ambilDatabase();
         setInterval(ambilDatabase, 30000);
     </script>
