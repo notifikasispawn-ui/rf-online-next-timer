@@ -13,7 +13,12 @@
                     colors: {
                         dark: "#0f172a",
                         darker: "#020617",
-                        accent: "#1e40af"
+                        accent: "#1e40af",
+                        groupA: "#27ae60",
+                        groupB: "#27ae60",
+                        groupC: "#27ae60",
+                        groupD: "#f39c12",
+                        groupE: "#e74c3c",
                     },
                     fontFamily: {
                         game: ["Orbitron", "sans-serif"]
@@ -26,6 +31,7 @@
         @layer utilities {
             .content-auto { content-visibility: auto; }
             .card-shadow { box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+            .border-l-4 { border-left-width: 4px; }
         }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,7 +39,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="bg-gradient-to-br from-gray-900 to-slate-900 text-white min-h-screen font-sans">
-    <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
         <!-- Header -->
         <div class="text-center mb-10">
             <h1 class="text-3xl md:text-4xl font-game font-bold text-blue-400 mb-3">
@@ -62,77 +68,81 @@
     </div>
 
     <script>
-        // GANTI DENGAN LINK RAW FILE database.json DI GITHUB KAMU
+        // ✅ GANTI DENGAN LINK RAW FILE database.json DI GITHUB KAMU
         const DATABASE_URL = "https://raw.githubusercontent.com/notifikasispawn/rf-online-next-timer/main/database.json";
         const TIMEZONE = "Asia/Jakarta";
 
         const JADWAL_TETAP = [
             {
-                "nama_grup": "Novus Boss Group A",
+                "nama_grup": "🟢 NOVUS BOSS GROUP A",
                 "waktu": ["12:00", "18:30"],
-                "warna": "green",
+                "warna": "groupA",
                 "daftar": [
-                    {"nama": "Mecha Yusigula", "level": 36, "lokasi": "Mazar Training Ground", "gambar": "https://i.imgur.com/4YbX7QH.png"},
-                    {"nama": "Mecha Dagan", "level": 38, "lokasi": "Vulcan Valley", "gambar": "https://i.imgur.com/9Zb8WqL.png"},
-                    {"nama": "Subject 13", "level": 40, "lokasi": "Skadi Vale", "gambar": "https://i.imgur.com/7sXpR5d.png"}
+                    {"nama": "Mecha Yusigula", "level": 36, "lokasi": "Mazar Training Ground"},
+                    {"nama": "Mecha Dagan", "level": 38, "lokasi": "Vulcan Valley"},
+                    {"nama": "Subject 13", "level": 40, "lokasi": "Skadi Vale"}
                 ]
             },
             {
-                "nama_grup": "Novus Boss Group B",
+                "nama_grup": "🟢 NOVUS BOSS GROUP B",
                 "waktu": ["12:00"],
-                "warna": "green",
+                "warna": "groupB",
                 "daftar": [
-                    {"nama": "2tion", "level": 42, "lokasi": "South Dorian Forest", "gambar": "https://i.imgur.com/2Rk9sTf.png"},
-                    {"nama": "Mecha Wild Beast", "level": 48, "lokasi": "Galio Sunken Lands", "gambar": "https://i.imgur.com/5Qe7vWg.png"},
-                    {"nama": "Mecha Optic Larva", "level": 48, "lokasi": "Galio Sunken Lands", "gambar": "https://i.imgur.com/8xR3vMh.png"},
-                    {"nama": "Rusty Sickle", "level": 49, "lokasi": "Spire Plains", "gambar": "https://i.imgur.com/3pK7y9n.png"}
+                    {"nama": "2tion", "level": 42, "lokasi": "South Dorian Forest"},
+                    {"nama": "Mecha Wild Beast", "level": 48, "lokasi": "Galio Sunken Lands"},
+                    {"nama": "Mecha Optic Larva", "level": 48, "lokasi": "Galio Sunken Lands"},
+                    {"nama": "Rusty Sickle", "level": 49, "lokasi": "Spire Plains"}
                 ]
             },
             {
-                "nama_grup": "Novus Boss Group C",
+                "nama_grup": "🟢 NOVUS BOSS GROUP C",
                 "waktu": ["18:30"],
-                "warna": "green",
+                "warna": "groupC",
                 "daftar": [
-                    {"nama": "Mecha Lunker", "level": 50, "lokasi": "Forest of Exiles", "gambar": "https://i.imgur.com/6tM2zXp.png"},
-                    {"nama": "Mecha Lizard", "level": 52, "lokasi": "Garden of the Gods", "gambar": "https://i.imgur.com/9aV8bNc.png"},
-                    {"nama": "Mecha Temizl", "level": 60, "lokasi": "Pilgrim's Island", "gambar": "https://i.imgur.com/7bNcFgH.png"},
-                    {"nama": "Prime Draco", "level": 62, "lokasi": "Fallen Temple", "gambar": "https://i.imgur.com/2zKqV9m.png"}
+                    {"nama": "Mecha Lunker", "level": 50, "lokasi": "Forest of Exiles"},
+                    {"nama": "Mecha Lizard", "level": 52, "lokasi": "Garden of the Gods"},
+                    {"nama": "Mecha Temizl", "level": 60, "lokasi": "Pilgrim's Island"},
+                    {"nama": "Prime Draco", "level": 62, "lokasi": "Fallen Temple"}
                 ]
             }
         ];
 
         const JADWAL_INTERVAL = [
             {
-                "nama_grup": "Novus Boss Group D",
+                "nama_grup": "🟡 NOVUS BOSS GROUP D",
                 "interval_jam": 42,
-                "warna": "orange",
+                "warna": "groupD",
                 "daftar": [
-                    {"nama": "Mecha Tamac", "level": 66, "lokasi": "Blackstone Munitions Factory", "gambar": "https://i.imgur.com/4sLqV9n.png"},
-                    {"nama": "Infernal Larva", "level": 67, "lokasi": "Pioneer's Hill", "gambar": "https://i.imgur.com/8yP7R2f.png"},
-                    {"nama": "Locust", "level": 68, "lokasi": "Seth Slums", "gambar": "https://i.imgur.com/5cQ9vKp.png"},
-                    {"nama": "Mecha Tweezer", "level": 70, "lokasi": "Seth Landfill", "gambar": "https://i.imgur.com/9tR2nMv.png"},
-                    {"nama": "Vastus", "level": 74, "lokasi": "Desert of Death", "gambar": "https://i.imgur.com/3zK7mQ8.png"}
+                    {"nama": "Mecha Tamac", "level": 66, "lokasi": "Blackstone Munitions Factory"},
+                    {"nama": "Infernal Larva", "level": 67, "lokasi": "Pioneer's Hill"},
+                    {"nama": "Locust", "level": 68, "lokasi": "Seth Slums"},
+                    {"nama": "Mecha Tweezer", "level": 70, "lokasi": "Seth Landfill"},
+                    {"nama": "Vastus", "level": 74, "lokasi": "Desert of Death"}
                 ]
             },
             {
-                "nama_grup": "Novus Boss Group E",
+                "nama_grup": "🔴 NOVUS BOSS GROUP E",
                 "interval_jam": 48,
-                "warna": "red",
+                "warna": "groupE",
                 "daftar": [
-                    {"nama": "Mecha Warbeast", "level": 76, "lokasi": "Broken Ruins", "gambar": "https://i.imgur.com/7pK2nL9.png"},
-                    {"nama": "Mecha Ertelem", "level": 77, "lokasi": "Ramon Desert", "gambar": "https://i.imgur.com/2vR8zXq.png"},
-                    {"nama": "Mecha Devourer", "level": 79, "lokasi": "Horizon Base", "gambar": "https://i.imgur.com/6bQ5kM9.png"},
-                    {"nama": "e Hook", "level": 80, "lokasi": "Screaming Vale", "gambar": "https://i.imgur.com/9cR3vM2.png"},
-                    {"nama": "Eldrige", "level": 81, "lokasi": "Saufa Colony", "gambar": "https://i.imgur.com/4tL7zN8.png"}
+                    {"nama": "Mecha Warbeast", "level": 76, "lokasi": "Broken Ruins"},
+                    {"nama": "Mecha Ertelem", "level": 77, "lokasi": "Ramon Desert"},
+                    {"nama": "Mecha Devourer", "level": 79, "lokasi": "Horizon Base"},
+                    {"nama": "e Hook", "level": 80, "lokasi": "Screaming Vale"},
+                    {"nama": "Eldrige", "level": 81, "lokasi": "Saufa Colony"}
                 ]
             }
         ];
 
         let dataKalah = {};
 
+        // Ambil data dari file database.json
         function ambilDatabase() {
             fetch(DATABASE_URL + "?t=" + Date.now())
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error("Gagal memuat file");
+                    return res.json();
+                })
                 .then(data => {
                     dataKalah = data;
                     tampilkanSemua();
@@ -141,11 +151,12 @@
                     document.getElementById("bossContainer").innerHTML = `
                         <div class="text-center text-red-400 py-10">
                             <i class="fa-solid fa-triangle-exclamation text-3xl mb-2"></i>
-                            <p>Gagal memuat data</p>
+                            <p>Gagal memuat data. Pastikan link database.json sudah benar dan file sudah diunggah.</p>
                         </div>`;
                 });
         }
 
+        // Hitung waktu untuk jadwal tetap
         function hitungWaktuTetap(waktuStr) {
             const sekarang = new Date(new Date().toLocaleString("en-US", {timeZone: TIMEZONE}));
             const [jam, menit] = waktuStr.split(":").map(Number);
@@ -155,45 +166,54 @@
             return target;
         }
 
+        // Hitung waktu untuk jadwal interval
         function hitungWaktuInterval(nama, jam) {
             if (!dataKalah[nama]) return null;
             const kalah = new Date(dataKalah[nama]);
             return new Date(kalah.getTime() + jam * 3600000);
         }
 
+        // Format tampilan sisa waktu
         function formatWaktu(tanggal) {
-            if (!tanggal) return "<span class='text-gray-400'>Belum dicatat</span>";
+            if (!tanggal) return "<span class='text-gray-400'>⏳ Belum tercatat</span>";
             const sekarang = new Date(new Date().toLocaleString("en-US", {timeZone: TIMEZONE}));
             const selisih = tanggal - sekarang;
-            if (selisih <= 0) return "<span class='text-green-400 font-bold'>SUDAH MUNCUL</span>";
             
-            const j = Math.floor(selisih / 3600000);
-            const m = Math.floor((selisih % 3600000) / 60000);
-            const d = Math.floor((selisih % 60000) / 1000);
-            return `${j.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${d.toString().padStart(2, '0')}`;
+            if (selisih <= 0) return "<span class='text-green-400 font-bold'>🔥 SUDAH MUNCUL</span>";
+            
+            const hari = Math.floor(selisih / 86400000);
+            const jam = Math.floor((selisih % 86400000) / 3600000);
+            const menit = Math.floor((selisih % 3600000) / 60000);
+            const detik = Math.floor((selisih % 60000) / 1000);
+
+            if (hari > 0) return `${hari}h ${jam}j ${menit}m ${detik}d`;
+            return `${jam.toString().padStart(2, '0')}:${menit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
         }
 
+        // Tampilkan semua data ke halaman
         function tampilkanSemua() {
             const reset = hitungWaktuTetap("05:00");
             document.getElementById("resetTimer").textContent = formatWaktu(reset).replace(/<[^>]*>/g, '');
 
             let html = "";
 
+            // Tampilkan Grup Tetap
             JADWAL_TETAP.forEach(grup => {
                 html += `
-                <div class="bg-gray-800/60 rounded-xl p-5 border-l-4 border-${grup.warna}-500 card-shadow">
-                    <h2 class="text-xl font-semibold text-${grup.warna}-400 mb-4 flex items-center gap-2">
+                <div class="bg-gray-800/60 rounded-xl p-5 border-l-4 border-${grup.warna} card-shadow">
+                    <h2 class="text-xl font-semibold text-${grup.warna} mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-calendar-days"></i> ${grup.nama_grup}
-                        <span class="text-sm text-gray-400 font-normal">${grup.waktu.join(" & ")} WIB</span>
+                        <span class="text-sm text-gray-400 font-normal">• ${grup.waktu.join(" & ")} WIB</span>
                     </h2>
-                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="space-y-3">
                         ${grup.daftar.map(boss => `
-                            <div class="bg-gray-700/50 rounded-lg p-3 flex items-center gap-3">
-                                <img src="${boss.gambar}" alt="${boss.nama}" class="w-16 h-16 rounded object-cover bg-gray-600">
-                                <div class="flex-1">
-                                    <h3 class="font-bold text-white">${boss.nama} <span class="text-xs text-gray-300">Lv.${boss.level}</span></h3>
-                                    <p class="text-xs text-gray-300 mb-1">📍 ${boss.lokasi}</p>
-                                    <div class="text-lg font-semibold text-${grup.warna}-300">${formatWaktu(hitungWaktuTetap(grup.waktu[0]))}</div>
+                            <div class="bg-gray-700/50 rounded-lg p-4">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h3 class="font-bold text-white text-lg">${boss.nama} <span class="text-sm text-gray-300">Lv.${boss.level}</span></h3>
+                                        <p class="text-sm text-gray-300 mt-1">📍 ${boss.lokasi}</p>
+                                    </div>
+                                    <div class="text-xl font-semibold text-${grup.warna}">${formatWaktu(hitungWaktuTetap(grup.waktu[0]))}</div>
                                 </div>
                             </div>
                         `).join("")}
@@ -201,21 +221,23 @@
                 </div>`;
             });
 
+            // Tampilkan Grup Interval
             JADWAL_INTERVAL.forEach(grup => {
                 html += `
-                <div class="bg-gray-800/60 rounded-xl p-5 border-l-4 border-${grup.warna}-500 card-shadow">
-                    <h2 class="text-xl font-semibold text-${grup.warna}-400 mb-4 flex items-center gap-2">
+                <div class="bg-gray-800/60 rounded-xl p-5 border-l-4 border-${grup.warna} card-shadow">
+                    <h2 class="text-xl font-semibold text-${grup.warna} mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-clock-rotate-left"></i> ${grup.nama_grup}
-                        <span class="text-sm text-gray-400 font-normal">Interval ${grup.interval_jam} Jam</span>
+                        <span class="text-sm text-gray-400 font-normal">• Interval ${grup.interval_jam} Jam</span>
                     </h2>
-                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="space-y-3">
                         ${grup.daftar.map(boss => `
-                            <div class="bg-gray-700/50 rounded-lg p-3 flex items-center gap-3">
-                                <img src="${boss.gambar}" alt="${boss.nama}" class="w-16 h-16 rounded object-cover bg-gray-600">
-                                <div class="flex-1">
-                                    <h3 class="font-bold text-white">${boss.nama} <span class="text-xs text-gray-300">Lv.${boss.level}</span></h3>
-                                    <p class="text-xs text-gray-300 mb-1">📍 ${boss.lokasi}</p>
-                                    <div class="text-lg font-semibold text-${grup.warna}-300">${formatWaktu(hitungWaktuInterval(boss.nama, grup.interval_jam))}</div>
+                            <div class="bg-gray-700/50 rounded-lg p-4">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h3 class="font-bold text-white text-lg">${boss.nama} <span class="text-sm text-gray-300">Lv.${boss.level}</span></h3>
+                                        <p class="text-sm text-gray-300 mt-1">📍 ${boss.lokasi}</p>
+                                    </div>
+                                    <div class="text-xl font-semibold text-${grup.warna}">${formatWaktu(hitungWaktuInterval(boss.nama, grup.interval_jam))}</div>
                                 </div>
                             </div>
                         `).join("")}
@@ -226,6 +248,7 @@
             document.getElementById("bossContainer").innerHTML = html;
         }
 
+        // Jalankan fungsi pertama kali, lalu perbarui setiap 30 detik
         ambilDatabase();
         setInterval(ambilDatabase, 30000);
     </script>
